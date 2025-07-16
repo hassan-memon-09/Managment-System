@@ -3,6 +3,7 @@ import TaskList from './components/TaskLists';
 import TaskForm from './components/TaskForm';
 import Login from './components/Login';
 import { getTasks } from './services/api';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -10,6 +11,7 @@ function App() {
   const [filter, setFilter] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     if (token) {
@@ -32,55 +34,93 @@ function App() {
     setTasks([]);
   };
 
+  const filteredTasks = tasks.filter((task) => {
+    const matchesFilter = filter === 'all' ? true : task.status === filter;
+    const matchesSearch =
+      task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      task._id?.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   if (!token) {
     return <Login setToken={setToken} />;
   }
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Task Manager</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-        >
-          Logout
-        </button>
+    <div className="min-h-screen bg-gradient-to-r from-purple-700 to-indigo-900 text-white font-sans px-4 py-8">
+      <div className="max-w-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-lg p-6 rounded-2xl shadow-xl border border-white/20">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-4xl font-bold text-white">🌟 Task Manager</h1>
+          <button
+            onClick={handleLogout}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-300"
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+          <div className="flex gap-3 w-full md:w-auto">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg transition-all duration-300"
+            >
+              ➕ Add Task
+            </button>
+            <select
+              onChange={(e) => setFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-4 py-2 text-black"
+            >
+              <option value="all">All Tasks</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <input
+            type="text"
+            placeholder="🔍 Search by Name or ID"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="border border-gray-300 px-4 py-2 rounded-lg w-full md:w-64 text-black"
+          />
+        </div>
+
+        <div className="bg-white/10 border border-white/20 p-4 rounded-xl shadow-lg mb-6">
+          <TaskList
+            tasks={filteredTasks}
+            setEditingTask={setEditingTask}
+            setIsModalOpen={setIsModalOpen}
+            refreshTasks={fetchTasks}
+            token={token}
+          />
+        </div>
+
+        <AnimatePresence>
+          {isModalOpen && (
+            <motion.div
+              className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <motion.div
+                className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md text-black"
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: 100, opacity: 0 }}
+              >
+                <TaskForm
+                  setIsModalOpen={setIsModalOpen}
+                  refreshTasks={fetchTasks}
+                  editingTask={editingTask}
+                  setEditingTask={setEditingTask}
+                  token={token}
+                />
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-      <div className="mb-4 flex justify-between items-center">
-        <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-        >
-          Add Task
-        </button>
-        <select
-          onChange={(e) => setFilter(e.target.value)}
-          className="border p-2 rounded"
-        >
-          <option value="all">All Tasks</option>
-          <option value="pending">Pending</option>
-          <option value="completed">Completed</option>
-        </select>
-      </div>
-      <TaskList
-        tasks={tasks.filter(task =>
-          filter === 'all' ? true : task.status === filter
-        )}
-        setEditingTask={setEditingTask}
-        setIsModalOpen={setIsModalOpen}
-        refreshTasks={fetchTasks}
-        token={token}
-      />
-      {isModalOpen && (
-        <TaskForm
-          setIsModalOpen={setIsModalOpen}
-          refreshTasks={fetchTasks}
-          editingTask={editingTask}
-          setEditingTask={setEditingTask}
-          token={token}
-        />
-      )}
     </div>
   );
 }

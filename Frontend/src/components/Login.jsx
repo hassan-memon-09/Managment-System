@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { login, register } from '../services/api';
+import { motion } from 'framer-motion';
 
 function Login({ setToken }) {
   const [username, setUsername] = useState('');
@@ -26,41 +27,49 @@ function Login({ setToken }) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
-        <h2 className="text-2xl font-bold mb-4">
-          {isRegister ? 'Register' : 'Login'}
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-700 to-indigo-900 text-white">
+      <motion.div
+        className="bg-white/20 backdrop-blur-md border border-white/30 p-8 rounded-2xl shadow-2xl w-full max-w-sm"
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <h2 className="text-3xl font-bold text-center mb-6">
+          {isRegister ? '🔐 Register' : '🔓 Login'}
         </h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div onSubmit={handleSubmit} className="space-y-4">
+
+        {error && <p className="text-red-400 text-sm mb-4 text-center">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-5">
           <input
             type="text"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            className="w-full p-2 border rounded"
+            placeholder="👤 Username"
+            className="w-full p-3 rounded-lg text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full p-2 border rounded"
+            placeholder="🔑 Password"
+            className="w-full p-3 rounded-lg text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
           <button
-            onClick={handleSubmit}
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+            type="submit"
+            className="w-full bg-purple-600 hover:bg-purple-700 transition-colors duration-300 text-white font-semibold py-3 rounded-lg shadow-md"
           >
             {isRegister ? 'Register' : 'Login'}
           </button>
           <button
+            type="button"
             onClick={() => setIsRegister(!isRegister)}
-            className="w-full text-blue-500 hover:underline"
+            className="w-full text-sm text-purple-200 hover:text-white transition-colors"
           >
-            {isRegister ? 'Switch to Login' : 'Switch to Register'}
+            {isRegister ? 'Already have an account? Login' : 'New here? Register'}
           </button>
-        </div>
-      </div>
+        </form>
+      </motion.div>
     </div>
   );
 }

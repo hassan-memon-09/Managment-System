@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { createTask, updateTask } from '../services/api';
+import { motion } from 'framer-motion';
 
 function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, token }) {
   const [title, setTitle] = useState('');
@@ -37,28 +38,42 @@ function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, t
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">
-          {editingTask ? 'Edit Task' : 'Add Task'}
+    <motion.div
+      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="bg-white text-black p-6 rounded-2xl shadow-2xl w-full max-w-md backdrop-blur-2xl"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: 100, opacity: 0 }}
+      >
+        <h2 className="text-2xl font-bold mb-4 text-center">
+          {editingTask ? '✏️ Edit Task' : '➕ Add New Task'}
         </h2>
-        {error && <p className="text-red-500 mb-4">{error}</p>}
-        <div onSubmit={handleSubmit} className="space-y-4">
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Task Title"
-            className="w-full p-2 border rounded"
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Task Description"
-            className="w-full p-2 border rounded"
+            rows={4}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           ></textarea>
-          <div className="flex justify-end space-x-2">
+          <div className="flex justify-end space-x-3">
             <button
+              type="button"
               onClick={() => {
                 setIsModalOpen(false);
                 setEditingTask(null);
@@ -66,20 +81,20 @@ function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, t
                 setDescription('');
                 setError('');
               }}
-              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              className="px-4 py-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600"
             >
               Cancel
             </button>
             <button
-              onClick={handleSubmit}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+              type="submit"
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
             >
               {editingTask ? 'Update' : 'Create'}
             </button>
           </div>
-        </div>
-      </div>
-    </div>
+        </form>
+      </motion.div>
+    </motion.div>
   );
 }
 
