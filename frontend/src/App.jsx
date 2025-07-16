@@ -1,3 +1,4 @@
+// src/App.jsx
 import { useState, useEffect } from 'react';
 import TaskList from './components/TaskLists';
 import TaskForm from './components/TaskForm';
@@ -12,6 +13,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showDropdown, setShowDropdown] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -30,9 +32,12 @@ function App() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('name');
     setToken(null);
     setTasks([]);
   };
+
+  const userName = localStorage.getItem('name');
 
   const filteredTasks = tasks.filter((task) => {
     const matchesFilter = filter === 'all' ? true : task.status === filter;
@@ -51,12 +56,26 @@ function App() {
       <div className="max-w-4xl mx-auto bg-white bg-opacity-10 backdrop-blur-lg p-6 rounded-2xl shadow-xl border border-white/20">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-4xl font-bold text-white">🌟 Task Manager</h1>
-          <button
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-all duration-300"
-          >
-            Logout
-          </button>
+          <div className="relative inline-block text-left">
+            <button
+              onClick={() => setShowDropdown(!showDropdown)}
+              className="inline-flex justify-center w-full rounded-md border border-white/30 shadow-sm px-4 py-2 bg-white/10 text-white hover:bg-white/20 transition-all"
+            >
+              👤 {userName}
+            </button>
+            {showDropdown && (
+              <div className="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                <div className="py-1">
+                  <button
+                    onClick={handleLogout}
+                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                  >
+                    🚪 Logout
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
