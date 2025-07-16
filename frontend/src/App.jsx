@@ -97,7 +97,7 @@ function App() {
           </div>
           <input
             type="text"
-            placeholder="🔍 Search by Name or ID"
+            placeholder="🔍 Search by Name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="border border-gray-300 px-4 py-2 rounded-lg w-full md:w-64 text-black"
