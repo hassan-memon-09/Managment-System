@@ -3,7 +3,6 @@ const router = express.Router();
 const Task = require('../models/Task');
 const authMiddleware = require('../middleware/auth');
 
-// Create Task
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { title, description } = req.body;
@@ -22,7 +21,7 @@ router.post('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Get All Tasks
+
 router.get('/', authMiddleware, async (req, res) => {
   try {
     const tasks = await Task.find({ user: req.user.id });
@@ -32,7 +31,7 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 });
 
-// Get Single Task
+
 router.get('/:id', authMiddleware, async (req, res) => {
   try {
     const task = await Task.findOne({ _id: req.params.id, user: req.user.id });
@@ -45,7 +44,6 @@ router.get('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Update Task
 router.put('/:id', authMiddleware, async (req, res) => {
   try {
     const { title, description, status } = req.body;
@@ -63,7 +61,6 @@ router.put('/:id', authMiddleware, async (req, res) => {
   }
 });
 
-// Delete Task
 router.delete('/:id', authMiddleware, async (req, res) => {
   try {
     const task = await Task.findOneAndDelete({ _id: req.params.id, user: req.user.id });
