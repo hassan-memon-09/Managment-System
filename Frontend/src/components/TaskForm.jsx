@@ -39,13 +39,13 @@ function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, t
 
   return (
     <motion.div
-      className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50"
+      className="fixed inset-0 z-50 bg-black/60 grid place-items-center"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="bg-white text-black p-6 rounded-2xl shadow-2xl w-full max-w-md backdrop-blur-2xl"
+        className="w-full max-w-md bg-white text-black rounded-2xl p-6 shadow-2xl backdrop-blur-2xl"
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: 100, opacity: 0 }}
@@ -54,7 +54,7 @@ function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, t
           {editingTask ? '✏️ Edit Task' : '➕ Add New Task'}
         </h2>
 
-        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+        {error && <p className="text-red-500 text-sm mb-4 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
@@ -71,7 +71,7 @@ function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, t
             rows={4}
             className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           ></textarea>
-          <div className="flex justify-end space-x-3">
+          <div className="flex justify-end gap-3">
             <button
               type="button"
               onClick={() => {
@@ -81,13 +81,13 @@ function TaskForm({ setIsModalOpen, refreshTasks, editingTask, setEditingTask, t
                 setDescription('');
                 setError('');
               }}
-              className="px-4 py-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600"
+              className="px-4 py-2 rounded-lg bg-gray-500 text-white hover:bg-gray-600 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
             >
               {editingTask ? 'Update' : 'Create'}
             </button>

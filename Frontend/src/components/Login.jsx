@@ -3,22 +3,25 @@ import { login, register } from '../services/api';
 import { motion } from 'framer-motion';
 
 function Login({ setToken }) {
-  const [username, setUsername] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isRegister, setIsRegister] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!username || !password) {
-      setError('Username and password are required');
+    if ((isRegister && (!name || !email || !password)) || (!isRegister && (!email || !password))) {
+      setError('Please fill all required fields');
       return;
     }
     try {
       const response = isRegister
-        ? await register({ username, password })
-        : await login({ username, password });
+        ? await register({ name, email, password })
+        : await login({ email, password });
+
       localStorage.setItem('token', response.token);
+      localStorage.setItem('name', response.name);
       setToken(response.token);
       setError('');
     } catch (err) {
@@ -41,11 +44,20 @@ function Login({ setToken }) {
         {error && <p className="text-red-400 text-sm mb-4 text-center">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
+          {isRegister && (
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="🧑 Name"
+              className="w-full p-3 rounded-lg text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+            />
+          )}
           <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="👤 Username"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="📧 Email"
             className="w-full p-3 rounded-lg text-black border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
           />
           <input
