@@ -20,7 +20,7 @@ function TaskPage({ token }) {
       const response = await getTasks(token);
       setTasks(response.tasks);
     } catch (err) {
-      console.error('Error fetching tasks:', err);
+      console.error('Error In fetching the Task:', err);
     }
   };
 
