@@ -25,7 +25,7 @@ function TaskPage({ token }) {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
+    <div className="container mx-auto p-4 max-w-4xl mt-4 ">
       <h1 className="text-3xl font-bold mb-6">Your Tasks</h1>
       <div className="mb-4 flex justify-between items-center">
         <button
